@@ -190,7 +190,7 @@
 <body>
     <div class="background-effects"></div>
     <div class="container">
-        <h1>CrewBriefing.com Login</h1>
+        <h1>Fast Officer Briefs</h1>
         <p class="text-gray-400 text-center mb-6">Enter your CrewBriefing.com username and password to fetch and process your latest briefing.</p>
 
         <form id="briefingForm">
@@ -235,29 +235,22 @@
             submitButton.disabled = true;
             submitButton.innerHTML = 'Fetching...';
 
-            const API_URL = 'https://brandzlank.pythonanywhere.com/fetch_and_process_briefing';
+            const API_URL = 'http://localhost:5000/fetch_and_process_briefing'; // Placeholder for testing
 
             // Create a timeout controller
             const controller = new AbortController();
             const timeoutId = setTimeout(() => controller.abort(), 20000); // 20-second timeout
 
             try {
-                const response = await fetch(API_URL, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ username, password }),
-                    signal: controller.signal // Apply the timeout signal
-                });
+                // Mock a successful response for testing purposes
+                const mockResponse = {
+                    success: true,
+                    pdf_download_url: 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf'
+                };
+                const data = mockResponse;
 
-                clearTimeout(timeoutId); // Clear the timeout if the request succeeds
-
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-
-                const data = await response.json();
+                // Simulate a network delay
+                await new Promise(resolve => setTimeout(resolve, 3000));
 
                 if (data.success) {
                     const pdfUrl = data.pdf_download_url;
@@ -303,3 +296,4 @@
     </script>
 </body>
 </html>
+
