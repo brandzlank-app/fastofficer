@@ -196,24 +196,27 @@
             submitButton.disabled = true;
             submitButton.innerHTML = 'Fetching...';
 
-            const API_URL = 'http://localhost:5000/fetch_and_process_briefing'; // Placeholder for testing
+            const API_URL = 'https://brandzlank.pythonanywhere.com';
 
             // Create a timeout controller
             const controller = new AbortController();
             const timeoutId = setTimeout(() => controller.abort(), 20000); // 20-second timeout
 
             try {
-                // Mock a successful response for testing purposes
-                const mockResponse = {
-                    success: true,
-                    pdf_download_url: 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf'
-                };
-                const data = mockResponse;
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ username, password }),
+                    signal: controller.signal
+                });
 
-                // Simulate a network delay
-                await new Promise(resolve => setTimeout(resolve, 3000));
+                clearTimeout(timeoutId);
 
-                if (data.success) {
+                const data = await response.json();
+
+                if (response.ok && data.success) {
                     const pdfUrl = data.pdf_download_url;
                     resultDiv.innerHTML = `
                         <div class="success-box">
@@ -222,7 +225,7 @@
                         </div>
                     `;
                 } else {
-                    const errorMessage = data.error_log || "An unknown error occurred. Please check your credentials and try again.";
+                    const errorMessage = data.error || data.error_log || "An unknown error occurred. Please check your credentials and try again.";
                     resultDiv.innerHTML = `
                         <div class="error-box">
                             <p>Error: ${errorMessage}</p>
