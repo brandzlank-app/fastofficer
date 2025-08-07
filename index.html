@@ -205,7 +205,7 @@
         </form>
 
         <div id="statusMessage" class="hidden">
-            <div id="loadingIndicator" class="hidden spinner-container">
+            <div id="loadingIndicator" class="spinner-container hidden">
                 <div class="spinner"></div>
                 <p class="mt-2 text-sm">Fetching your briefing. This may take a moment...</p>
             </div>
@@ -227,6 +227,7 @@
             const loadingIndicator = document.getElementById('loadingIndicator');
             const resultDiv = document.getElementById('result');
 
+            // Hide the old results and show the loading spinner
             statusMessage.classList.remove('hidden');
             loadingIndicator.classList.remove('hidden');
             resultDiv.classList.add('hidden');
@@ -236,14 +237,25 @@
 
             const API_URL = 'https://brandzlank.pythonanywhere.com/fetch_and_process_briefing';
 
+            // Create a timeout controller
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 20000); // 20-second timeout
+
             try {
                 const response = await fetch(API_URL, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({ username, password })
+                    body: JSON.stringify({ username, password }),
+                    signal: controller.signal // Apply the timeout signal
                 });
+
+                clearTimeout(timeoutId); // Clear the timeout if the request succeeds
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
 
                 const data = await response.json();
 
@@ -265,11 +277,22 @@
                 }
             } catch (error) {
                 console.error('Fetch error:', error);
-                resultDiv.innerHTML = `
-                    <div class="error-box">
-                        <p>Connection Error: Could not connect to the server. Please try again later.</p>
-                    </div>
-                `;
+                if (error.name === 'AbortError') {
+                    // This is our timeout error
+                    resultDiv.innerHTML = `
+                        <div class="error-box">
+                            <p>Connection Error:</p>
+                            <p class="mt-1 text-sm text-red-700">Request timed out. The server took too long to respond. Please try again later.</p>
+                        </div>
+                    `;
+                } else {
+                    resultDiv.innerHTML = `
+                        <div class="error-box">
+                            <p>Connection Error:</p>
+                            <p class="mt-1 text-sm text-red-700">Could not connect to the server. Please try again later.</p>
+                        </div>
+                    `;
+                }
             } finally {
                 loadingIndicator.classList.add('hidden');
                 resultDiv.classList.remove('hidden');
@@ -280,4 +303,3 @@
     </script>
 </body>
 </html>
-
