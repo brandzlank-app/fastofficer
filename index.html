@@ -221,16 +221,13 @@
             const loadingIndicator = document.getElementById('loadingIndicator');
             const resultDiv = document.getElementById('resultDiv');
 
-            // **IMPORTANT:** Replace this URL with your PythonAnywhere API endpoint
             const API_URL = 'https://brandzlank.pythonanywhere.com/api/briefing';
             
-            // Hide previous results and show loading indicator
             resultDiv.classList.add('hidden');
             loadingIndicator.classList.remove('hidden');
             submitButton.disabled = true;
 
             try {
-                // We're creating a timeout controller to handle long requests
                 const controller = new AbortController();
                 const timeoutId = setTimeout(() => controller.abort(), 60000); // 60 second timeout
 
