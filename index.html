@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fast Officer Briefs</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="background-effects"></div>
+    <div class="container">
+        <h1>Fast Officer Briefs</h1>
+        <form id="briefingForm">
+            <label for="username">CrewBriefing Username</label>
+            <input type="text" id="username" name="username" required>
+            <label for="password">CrewBriefing Password</label>
+            <input type="password" id="password" name="password" required>
+            <button type="submit" class="fetch-btn">Fetch & Process Briefing</button>
+        </form>
+        <div id="status"></div>
+        <div id="results" style="display:none;">
+            <p class="success-message">Pilot briefing form generated successfully.</p>
+            <div class="result-row">
+                <strong>SFR Code:</strong> <span id="sfrCode"></span>
+            </div>
+            <div class="result-row">
+                <strong>Local Time:</strong> <span id="localTime"></span>
+            </div>
+            <a id="pdfLink" href="#" target="_blank" class="pdf-btn">Download Generated PDF</a>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
