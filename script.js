@@ -7,7 +7,7 @@ document.getElementById('briefingForm').addEventListener('submit', async functio
     const resultsDiv = document.getElementById('results');
 
     // **IMPORTANT:** Replace this URL with your PythonAnywhere API endpoint
-    const API_URL = 'https://brandzlank.pythonanywhere.com/api/briefing'; 
+    const API_URL = 'https://brandzlank.pythonanywhere.com'; 
 
     statusDiv.textContent = 'Requesting briefing... This may take a moment.';
     resultsDiv.style.display = 'none';
